@@ -9,6 +9,9 @@ cd installer
 
 cd imgcomp-targz
 echo "#!/bin/bash" > install.sh
+echo "echo Imgcomp request java to working. Install it before install imgcomp" >> install.sh
+echo "Press [ENTER] to install imgcomp" >> install.sh
+echo "read -p \"$*\"" >> install.sh
 echo "cp usr/bin/imgcomp /usr/bin/" >> install.sh
 chmod +x install.sh
 cd ..
