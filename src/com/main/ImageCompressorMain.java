@@ -11,12 +11,8 @@ import com.files.Files;
 
 public class ImageCompressorMain 
 {
-	static
-	{
-		System.loadLibrary("libimgcomp");
-	}
 
-	public static void main(String[] args) throws InterruptedException 
+	public static void main(String[] args) 
 	{
 		if (args.length < 1) 
 		{
@@ -26,26 +22,35 @@ public class ImageCompressorMain
 		else
 		{
 			if (args.length > 1) 
-			{				
+			{
+				int move;
 				Args.flags = args[0];
-				Args.directory = args[1];
-				Args.divider = Double.parseDouble(args[2]);
-				Args.format = args[3];
+				
+				if (args[0].startsWith("-")) move = 1;
+				else move = 0;
+				
+				Args.directory = args[1 - move];
+				Args.divider = Double.parseDouble(args[2 - move]);
+				Args.format = args[3 - move];
 				
 				if (Args.divider == 0) Args.divider = 1;
 			}
 			
-			if(args[0].contains("k"))
+			if(Args.flags.contains("k"))
 				Args.keepfiles = true;
 			
-			if(args[0].contains("n"))
+			if(Args.flags.contains("n"))
 				Args.names = true;
 			
-			if(args[0].contains("help"))
+			if(Args.flags.startsWith("-help"))
 				help();
 			
 		}
-		
+		compress();
+	}
+	
+	public static void compress()
+	{
 		System.out.println("Searching files...");
 		List<File> files = Files.listf(Args.directory);
 		
@@ -53,9 +58,6 @@ public class ImageCompressorMain
 		long sizebefore = Files.getDirectorySize(new File(Args.directory));
 		System.out.println(files.size() + " files found in all directories and subdirectories");
 		System.out.println("Size total:" + (sizebefore / 1000 / 1000) + "MB (" + sizebefore + " Bytes)");
-		
-		System.out.println("Compression starts with 3 seconds... \n");
-		Thread.sleep(3000);
 		
 		int percent;
 		
@@ -99,7 +101,6 @@ public class ImageCompressorMain
 		
 		double ratio = (int)((double)sizeafter / (double)sizebefore * (double)100);
 		System.out.println("Lossy compression ratio: " + ratio + "%");
-
 	}
 
 	private static void help() 
@@ -107,10 +108,11 @@ public class ImageCompressorMain
 		System.out.println("Usage: imgcomp -<flags> <folder or image path> <divider> <format>");
 		System.out.println("Flags: -k - keep original files");
 		System.out.println("Flags: -n - keep original names on compressed files");
+		System.out.println("Flags: -help - shows how to use imgcomp");
 		System.out.println("Flags use: -xyz");
-		System.out.println("If you dont use flags enter \"-\" only");
+		System.out.println("If you dont use flags use: imgcomp <folder or image path> <divider> <format>");
 		System.out.println("Divider: Resolution was divided by divider");
-		System.out.println("Format: png/jpg/gif/bmp etc.. (jpg recomended)");
+		System.out.println("Format: png/jpg/gif etc.. (jpg recomended)");
 		System.exit(0);
 	} 
 

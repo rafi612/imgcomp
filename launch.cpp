@@ -49,7 +49,7 @@ int main(int argc,char* argv[])
     for (int i=1;i<argc;i++) args.append(std::string(argv[i]).append(" "));
 
     //print name
-    cout << "Image Compressor v1.2" << endl;
+    cout << "Image Compressor v1.0" << endl;
 
     //concat command and run
     string total(string("java -Duser.dir=\"" + get_current_dir() + "\" -jar \"") + getApplicationDirectory() + "/" + exename + "\" " + args);
