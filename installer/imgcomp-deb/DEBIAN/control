@@ -1,0 +1,12 @@
+Package: imgcomp
+Version: 1.0
+Section: Utilities
+Priority: optional
+Architecture: all
+Installed-Size: 30
+Homepage: https://github.com/rafi612/imgcomp
+Depends: default-jre
+Maintainer: rafi612
+Description: imgcomp
+ Cross platform image compressing tool
+

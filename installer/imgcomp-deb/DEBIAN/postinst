@@ -1,0 +1,4 @@
+#!/bin/sh
+chmod +x /usr/bin/imgcomp
+chmod 775 /usr/bin/imgcomp
+exit 0
