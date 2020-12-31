@@ -15,3 +15,15 @@ cd ..
 
 tar -zcvf imgcomp.tar.gz imgcomp-targz
 dpkg-deb --build imgcomp-deb
+
+cd imgcomp-deb/usr/bin
+rm imgcomp
+cd ..
+cd ..
+cd ..
+cd imgcomp-targz/usr/bin
+rm imgcomp
+cd ..
+cd ..
+cd ..
+rm imgcomp-targz/install.sh
