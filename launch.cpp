@@ -3,7 +3,7 @@
 #else
 #include <unistd.h>
 #endif
-#ifdef WINDOWS
+#ifdef _WIN32
 #include <direct.h>
 #endif
 #include <iostream>
@@ -15,7 +15,7 @@ using namespace std;
 string exename;
 string args;
 
-#ifdef WINDOWS
+#ifdef _WIN32
 string getApplicationDirectory()
 {
   char result[ MAX_PATH ];
