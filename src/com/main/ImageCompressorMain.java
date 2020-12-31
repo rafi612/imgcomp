@@ -17,6 +17,7 @@ public class ImageCompressorMain
 		if (args.length < 1) 
 		{
 			help();
+			System.exit(0);
 		}
 		else
 		{
@@ -24,9 +25,9 @@ public class ImageCompressorMain
 			Args.flags = args[0];
 			if (args.length > 1) 
 			{
-				
-				if (args[0].startsWith("-")) move = 1;
-				else move = 0;
+			
+				if (args[0].startsWith("-")) move = 0;
+				else move = 1;
 				
 				Args.directory = args[1 - move];
 				Args.divider = Double.parseDouble(args[2 - move]);
@@ -57,6 +58,13 @@ public class ImageCompressorMain
 		long sizebefore = Files.getDirectorySize(new File(Args.directory));
 		System.out.println(files.size() + " files found in all directories and subdirectories");
 		System.out.println("Size total:" + (sizebefore / 1000 / 1000) + "MB (" + sizebefore + " Bytes)");
+		
+		
+		if (Args.keepfiles) 
+		{
+			System.out.println("Copying original files...");
+			Files.copyFolder(new File(Args.directory), new File(Args.directory + "-original"));
+		}
 		
 		int percent;
 		

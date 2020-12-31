@@ -6,7 +6,11 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +103,81 @@ public class Files
 
     }
     
+    public static void copyFolder(File source, File destination)
+    {
+        if (source.isDirectory())
+        {
+            if (!destination.exists())
+            {
+                destination.mkdirs();
+            }
+
+            String files[] = source.list();
+
+            for (String file : files)
+            {
+                File srcFile = new File(source, file);
+                File destFile = new File(destination, file);
+
+                copyFolder(srcFile, destFile);
+            }
+        }
+        else if (isImage(source))
+        {
+            InputStream in = null;
+            OutputStream out = null;
+
+            try
+            {
+                in = new FileInputStream(source);
+                out = new FileOutputStream(destination);
+
+                byte[] buffer = new byte[1024];
+
+                int length;
+                while ((length = in.read(buffer)) > 0)
+                {
+                    out.write(buffer, 0, length);
+                }
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static boolean isImage(File file)
+    {
+    	String mimetype = null;
+		try {
+			mimetype = java.nio.file.Files.probeContentType(file.toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	if (mimetype != null && mimetype.split("/")[0].equals("image"))
+    		return true;
+    	return false;
+    }
+    
     public static String removeExtension(String path)
     {
     	return path.replaceFirst("[.][^.]+$", "");
@@ -109,8 +188,7 @@ public class Files
     	return ImageIO.read(inputfile);
     }
     
-    public static native Image resizen(BufferedImage img, int width,int height,String format);
-    
+   
     public static BufferedImage resize(BufferedImage img, int width,int height,String format) 
     {
         Image tmp = img.getScaledInstance(width, height, 1);
