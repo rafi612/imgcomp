@@ -8,3 +8,5 @@ mv bin/imgcomp.jar .
 g++ launch.cpp -o launch.o
 
 cat launch.o imgcomp.jar > imgcomp
+rm launch.o
+rm imgcomp.jar
