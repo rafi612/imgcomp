@@ -52,7 +52,11 @@ int main(int argc,char* argv[])
     cout << "Image Compressor v1.0" << endl;
 
     //concat command and run
+	#ifdef _WIN32
+	string total(string("java -Duser.dir=\"" + get_current_dir() + "\" -jar \"") + getApplicationDirectory() + "\" " + args);
+	#else
     string total(string("java -Duser.dir=\"" + get_current_dir() + "\" -jar \"") + getApplicationDirectory() + "/" + exename + "\" " + args);
+	#endif
     system(total.c_str());
 
     return 0;
