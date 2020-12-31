@@ -17,14 +17,13 @@ public class ImageCompressorMain
 		if (args.length < 1) 
 		{
 			help();
-			System.exit(0);
 		}
 		else
 		{
+			int move;
+			Args.flags = args[0];
 			if (args.length > 1) 
 			{
-				int move;
-				Args.flags = args[0];
 				
 				if (args[0].startsWith("-")) move = 1;
 				else move = 0;
