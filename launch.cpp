@@ -1,10 +1,8 @@
 #ifdef _WIN32
 #include <windows.h>
+#include <direct.h>
 #else
 #include <unistd.h>
-#endif
-#ifdef _WIN32
-#include <direct.h>
 #endif
 #include <iostream>
 #include <string.h>
