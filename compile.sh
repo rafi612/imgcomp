@@ -4,6 +4,7 @@ echo =============================
 echo "To compile imgcomp you request:"
 echo jdk,g++
 echo =============================
+javac -d bin $(find ./src/* | grep .java)
 
 cd bin
 jar cvfe imgcomp.jar com.main.ImageCompressorMain *
