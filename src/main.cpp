@@ -1,6 +1,5 @@
 #include <iostream>
 #include <filesystem>
-#include <cstdio>
 
 #include "util.h"
 #include "imgcomp.h"
@@ -8,6 +7,7 @@
 #define VERSION "2.0"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 bool keepfiles,names;
 string source;
@@ -37,10 +37,10 @@ void compress(string file,double d,string f)
     cout << "Searching files..." << endl;
 
     vector<string> files;
-    if (is_dir(file)) get_files(&files,file);
+    if (fs::is_directory(file)) get_files(&files,file);
     else files.push_back(file);
 
-    int sizebefore = is_dir(file) ? get_dir_size(file) : filesize(file);
+    int sizebefore = fs::is_directory(file) ? get_dir_size(file) : fs::file_size(file);
 
     cout << files.size() << " files found in all directories and subdirectories" << endl;
     cout << "Size total:" << (sizebefore / 1000 / 1000) << "MB (" << sizebefore << " Bytes)" << endl;
@@ -48,10 +48,10 @@ void compress(string file,double d,string f)
     if (keepfiles)
     {
         cout << "Copying original files..." << endl;
-        if (is_dir(file))
-            std::filesystem::copy(file,string(file + "-original"));
+        if (fs::is_directory(file))
+            fs::copy(file,string(file + "-original"));
         else
-            std::filesystem::copy(file,string(remove_extension(file) + "-original" + get_extension(file)));
+            fs::copy(file,string(remove_extension(file) + "-original" + get_extension(file)));
     }
 
     int percent;
@@ -69,7 +69,7 @@ void compress(string file,double d,string f)
         int allTimeForCompressing = (elapsedTime * files.size() / (compressedFiles + 1));
         int remainingTime = allTimeForCompressing - elapsedTime;
 
-        if (!is_dir(files[i]))
+        if (!fs::is_directory(files[i]))
         {
             if (is_supported_image(files[i]))
             {
@@ -78,7 +78,7 @@ void compress(string file,double d,string f)
                 int w,h,comp;
                 unsigned char* image = load_image(files[i],&w,&h,&comp,get_format_id(f));
 
-                remove(files[i].c_str());
+                fs::remove(files[i]);
 
                 string output = remove_extension(files[i]) + filenameaddon + f;
 

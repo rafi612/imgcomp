@@ -1,7 +1,6 @@
 #include <vector>
 #include <cstdlib>
 #include <string>
-#include <dirent.h>
 #include <fstream>
 #include <filesystem>
 #include <chrono>
@@ -9,43 +8,17 @@
 #include "util.h"
 #include "imgcomp.h"
 
-#if defined(WIN32) || defined(_WIN32)
-#define PATH_SEPARATOR "\\"
-#else
-#define PATH_SEPARATOR "/"
-#endif
-
 using namespace std;
-
-bool is_dir(string path)
-{
-    DIR* directory = opendir(path.c_str());
-    return directory != NULL;
-}
+namespace fs = std::filesystem;
 
 void get_files(vector<string> *ret,string path)
 {
-    struct dirent **namelist;
-    int n;
-
-    n = scandir(path.c_str(), &namelist, 0, alphasort);
-    if (n < 0)
-       perror("scandir");
-    else
+    for (const auto & entry : fs::directory_iterator(path))
     {
-       while (n--)
-       {
-            const char* name = namelist[n]->d_name;
-
-            if (string(name) != "." && string(name) != "..")
-            {
-                if(is_dir(string(path + PATH_SEPARATOR + name)))
-                    get_files(ret,path + PATH_SEPARATOR + name);
-                else ret->push_back(string(path + PATH_SEPARATOR + name));
-            }
-            free(namelist[n]);
-       }
-       free(namelist);
+        if (fs::is_directory(entry.path()))
+            get_files(ret,entry.path());
+        else
+            ret->push_back(entry.path());
     }
 }
 
@@ -57,14 +30,8 @@ string remove_extension(string path)
 
 string get_extension(string path)
 {
-    std::filesystem::path filePath = path;
+    fs::path filePath = path;
     return filePath.extension();
-}
-
-int filesize(string filename)
-{
-    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
-    return in.tellg();
 }
 
 int get_dir_size(string dir)
@@ -73,7 +40,7 @@ int get_dir_size(string dir)
     get_files(&files,dir);
     int size;
     for (string file : files)
-        size += filesize(file);
+        size += fs::file_size(file);
     return size;
 }
 
