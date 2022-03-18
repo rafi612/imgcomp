@@ -15,10 +15,10 @@ void get_files(vector<string> *ret,string path)
 {
     for (const auto & entry : fs::directory_iterator(path))
     {
-        if (fs::is_directory(entry.path()))
-            get_files(ret,entry.path());
+        if (fs::is_directory(entry.path().u8string()))
+            get_files(ret,entry.path().u8string());
         else
-            ret->push_back(entry.path());
+            ret->push_back(entry.path().u8string());
     }
 }
 
@@ -31,7 +31,7 @@ string remove_extension(string path)
 string get_extension(string path)
 {
     fs::path filePath = path;
-    return filePath.extension();
+    return filePath.extension().u8string();
 }
 
 int get_dir_size(string dir)
