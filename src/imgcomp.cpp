@@ -11,47 +11,33 @@
 #include "imgcomp.h"
 #include "util.h"
 
-unsigned char *load_image(std::string srcpath,int* w,int* h,int* comp,const int format)
+using namespace std;
+
+unsigned char *load_image(std::string srcpath,int* w,int* h,int* comp,const int dest_format)
 {
-    int dest_chan = format == JPG ? STBI_rgb : STBI_rgb_alpha;
+    int dest_chan = dest_format == JPG ? STBI_rgb : STBI_rgb_alpha;
 
     return stbi_load(srcpath.c_str(),w,h,comp,dest_chan);
 }
 
-void print(unsigned char *xd)
-{
-    for (int i = 0;i < 10;i++)
-        cout << (int)xd[i] << endl;
-}
-
-unsigned char* convert2channel(unsigned char* input,int w,int h,int dest_chan,int src_chan)
-{
-    unsigned char* ret = (unsigned char*)malloc(w * h * dest_chan);
-
-    int j = 0;
-    for(size_t i = 0 ; i < w * h * src_chan; ++i )
-    {
-        ret[j] = input[i];
-        j++;
-    }
-
-    return ret;
-
-}
-
-void compress_image(unsigned char* pixels,int w,int h,int comp,std::string destpath,double divider,const int f)
+unsigned char* compress_image(unsigned char* pixels,int w,int h,int comp,double divider,const int f,int* out_w,int* out_h,int* dest_chan)
 {
     //print(pixels);
-    int out_w = (int)(w / divider);
-    int out_h = (int)(h / divider);
+    *out_w = (int)(w / divider);
+    *out_h = (int)(h / divider);
 
-    int dest_chan = f == JPG ? STBI_rgb : STBI_rgb_alpha;
+    *dest_chan = f == JPG ? STBI_rgb : STBI_rgb_alpha;
 
-    unsigned char* output_pixels = (unsigned char*) malloc(out_w * out_h * dest_chan);
+    unsigned char* output_pixels = (unsigned char*) malloc((*out_w) * (*out_h) * (*dest_chan));
 
-    stbir_resize_uint8(pixels,w,h,0,output_pixels,out_w,out_h,0,dest_chan);
+    stbir_resize_uint8(pixels,w,h,0,output_pixels,*out_w,*out_h,0,*dest_chan);
     stbi_image_free(pixels);
 
+    return output_pixels;
+}
+
+void write_image(string destpath,unsigned char* output_pixels,int out_w,int out_h,int comp,const int f)
+{
     switch (f)
     {
     case JPG:

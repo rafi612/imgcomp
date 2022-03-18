@@ -1,7 +1,6 @@
 #include <vector>
 #include <cstdlib>
 #include <string>
-#include <fstream>
 #include <filesystem>
 #include <chrono>
 
@@ -9,6 +8,7 @@
 #include "imgcomp.h"
 
 using namespace std;
+using namespace std::chrono;
 namespace fs = std::filesystem;
 
 void get_files(vector<string> *ret,string path)
@@ -46,7 +46,6 @@ int get_dir_size(string dir)
 
 uint64_t timeSinceEpochMillisec()
 {
-  using namespace std::chrono;
   return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 

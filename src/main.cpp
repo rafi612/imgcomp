@@ -74,18 +74,28 @@ void compress(string file,double d,string f)
             if (is_supported_image(files[i]))
             {
                 cout << "Compressed: " << percent << "% Elapsed: " << elapsedTime << "s ETA: " << remainingTime << "s" << endl;
-
+                
+                //load
                 int w,h,comp;
                 unsigned char* image = load_image(files[i],&w,&h,&comp,get_format_id(f));
 
+                //remove old file
                 fs::remove(files[i]);
-
+                
+                //output path
                 string output = remove_extension(files[i]) + filenameaddon + f;
 
-                compress_image(image,w,h,comp,output,d,get_format_id(f));
+                //resize
+                int out_w, out_h, dest_chan;
+                unsigned char* out_image = compress_image(image,w,h,comp,d,get_format_id(f),&out_w,&out_h,&dest_chan);
+
+                //write
+                write_image(output,out_image,out_w,out_h,dest_chan,get_format_id(f));
+
                 cout << "Compressed " << files[i] << " -> " << output << endl;
 			    compressedFiles++;
             }
+            else cout << "Skipped " << files[i] << endl;
         }
 	}
 

@@ -2,7 +2,6 @@
 #define UTIL_H
 
 #include <vector>
-#include <fstream>
 
 using namespace std;
 
