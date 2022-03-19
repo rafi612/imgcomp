@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void get_files(std::vector<std::string> *ret,std::string path);
+void get_files(vector<string> *ret,string path);
 string remove_extension(string path);
 string get_extension(string path);
 int get_dir_size(string dir);
