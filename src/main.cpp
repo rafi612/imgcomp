@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 bool keepfiles,names;
 string source;
 string format;
-double divider = 0;
+double divider = 0;  
 
 bool contains(string s1,string s2)
 {
@@ -40,7 +40,7 @@ void compress(string file,double d,string f)
     if (fs::is_directory(file)) get_files(&files,file);
     else files.push_back(file);
 
-    int sizebefore = fs::is_directory(file) ? get_dir_size(file) : fs::file_size(file);
+    size_t sizebefore = fs::file_size(file);
 
     cout << files.size() << " files found in all directories and subdirectories" << endl;
     cout << "Size total:" << (sizebefore / 1000 / 1000) << "MB (" << sizebefore << " Bytes)" << endl;
@@ -57,17 +57,19 @@ void compress(string file,double d,string f)
     int percent;
     uint64_t startTime = timeSinceEpochMillisec() / 1000;
     int compressedFiles = 0;
-    int elapsedTime = 0;
+    uint64_t elapsedTime = 0;
 
     string filenameaddon = "-compress.";
     if (names) filenameaddon = ".";
+
+    string out_path;
 
     for (int i = 0; i < files.size();i++)
 	{
         percent = (int)((double)i / (double)files.size() * (double)100);
         elapsedTime = (timeSinceEpochMillisec() / 1000) - startTime;
-        int allTimeForCompressing = (elapsedTime * files.size() / (compressedFiles + 1));
-        int remainingTime = allTimeForCompressing - elapsedTime;
+        size_t allTimeForCompressing = (elapsedTime * files.size() / (compressedFiles + 1));
+        size_t remainingTime = allTimeForCompressing - elapsedTime;
 
         if (!fs::is_directory(files[i]))
         {
@@ -84,6 +86,7 @@ void compress(string file,double d,string f)
                 
                 //output path
                 string output = remove_extension(files[i]) + filenameaddon + f;
+                out_path = fs::is_directory(file) ? file : output;
 
                 //resize
                 int out_w, out_h, dest_chan;
@@ -101,7 +104,7 @@ void compress(string file,double d,string f)
 
     cout << endl << "Compression Complete!!!" << endl;
 	cout << "Searching files..." << endl << endl;
-	int sizeafter = get_dir_size(source);
+	size_t sizeafter = fs::file_size(out_path);
 
 	cout << "Total time:" << elapsedTime << "s" << endl;
 	cout << "Size before:" << (sizebefore / 1000 / 1000) << "MB (" << sizebefore << " Bytes)" << endl;
@@ -113,7 +116,7 @@ void compress(string file,double d,string f)
 
 int main(int argc, char *argv[])
 {
-    cout << "Image Compressor " << VERSION << endl;
+    cout << "Image Compressor " << VERSION << endl;  
 
     string flags;
     if (argc == 1)
@@ -121,33 +124,37 @@ int main(int argc, char *argv[])
        help();
        return 0;
     }
-    else
+
+    int move;
+    flags = argv[1];
+    if (argc >= 2)
     {
-        int move;
-        flags = argv[1];
-        if (argc >= 2)
-        {
-            //starts With
-            if (flags.find("-") == 0) move = 0;
-            else move = 1;
+        //starts With
+        if (flags.find("-") == 0) move = 0;
+        else move = 1;
 
-            source = argv[2- move];
-			divider = atof(argv[3 - move]);
-			format = argv[4 - move];
+        source = argv[2- move];
+		divider = atof(argv[3 - move]);
+		format = argv[4 - move];
 
-            if (divider == 0) divider = 1;
-        }
-		if (move == 0)
-		{
-			if(contains(flags,"k"))//k
-				keepfiles = true;
+        if (divider == 0) divider = 1;
+    }
+	if (move == 0)
+	{
+		if(contains(flags,"k"))//k
+			keepfiles = true;
 
-			if(contains(flags,"n"))//n
-				names = true;
-		}
+		if(contains(flags,"n"))//n
+			names = true;
+	}
 
-        if (contains(flags,"-help"))
-           help();
+    if (contains(flags,"-help"))
+       help();
+
+    if (fs::exists(source))
+    {
+        cerr << "Error: " << source << " not exists" << endl;
+        return -1;
     }
 
     compress(source,divider,format);

@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 #include <chrono>
+#include <fstream>
 
 #include "util.h"
 #include "imgcomp.h"
@@ -34,16 +35,6 @@ string get_extension(string path)
     return filePath.extension().u8string();
 }
 
-int get_dir_size(string dir)
-{
-    vector<string> files;
-    get_files(&files,dir);
-    int size;
-    for (string file : files)
-        size += fs::file_size(file);
-    return size;
-}
-
 uint64_t timeSinceEpochMillisec()
 {
   return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
@@ -72,4 +63,22 @@ const int get_format_id(string f)
     default:
         return -1;
     }
+}
+
+int filesize(string s)
+{
+    ifstream is(s , ifstream::binary);
+    int ret = is.tellg();
+    is.close();
+    return ret;
+}
+
+int get_dir_size(string dir)
+{
+    vector<string> files;
+    get_files(&files, dir);
+    int size = 0;
+    for (string file : files)
+        size += filesize(file);
+    return size;
 }
