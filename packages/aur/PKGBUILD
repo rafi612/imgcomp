@@ -1,0 +1,29 @@
+_name=imgcomp
+pkgname=imgcomp
+pkgver=2.0
+pkgrel=1
+pkgdesc='Cross platform image compressing tool'
+arch=('any')
+license=("MIT")
+makedepends=('cmake' 'git')
+source=("git+https://github.com/rafi612/"${_name}".git")
+sha512sums=("SKIP")
+
+prepare() {
+    cd "${_name}"
+    mkdir -vp build
+    git submodule init
+    git submodule update
+}
+
+build() {
+    cd "${_name}/build"
+    cmake ../
+    make
+}
+
+package() {
+    cd "${_name}/build"
+    sudo make install
+    sudo chmod +x /usr/bin/imgcomp
+}
