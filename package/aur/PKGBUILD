@@ -6,24 +6,24 @@ pkgdesc='Cross platform image compressing tool'
 arch=('any')
 license=("MIT")
 makedepends=('cmake' 'git')
-source=("git+https://github.com/rafi612/"${_name}".git")
+source=("git+https://github.com/rafi612/"${pkgname}".git")
 sha512sums=("SKIP")
 
 prepare() {
-    cd "${_name}"
+    cd "${pkgname}"
     mkdir -vp build
     git submodule init
     git submodule update
 }
 
 build() {
-    cd "${_name}/build"
-    cmake -DCMAKE_INSTALL_PREFIX="$pkgdir/" ../
+    cd "${pkgname}/build"
+    cmake ../
     make
 }
 
 package() {
-    cd "${_name}/build"
-    sudo make install
-    sudo chmod +x "$pkgdir/usr/bin/imgcomp"
+    cd "${pkgname}/build"
+    make DESTDIR="$pkgdir" install
+    chmod +x "$pkgdir/usr/bin/imgcomp"
 }
