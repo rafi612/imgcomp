@@ -5,6 +5,7 @@
 
 using namespace std;
 
+bool contains(string s1,string s2);
 void get_files(vector<string> *ret,string path);
 string remove_extension(string path);
 string get_extension(string path);

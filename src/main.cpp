@@ -14,11 +14,6 @@ string source;
 string format;
 double divider = 0;  
 
-bool contains(string s1,string s2)
-{
-    return s1.find(s2) != string::npos;
-}
-
 void help()
 {
     cout << "Usage: imgcomp -<flags> <folder or image path> <divider> <format>" << endl;

@@ -12,6 +12,11 @@ using namespace std;
 using namespace std::chrono;
 namespace fs = std::filesystem;
 
+bool contains(string s1,string s2)
+{
+    return s1.find(s2) != string::npos;
+}
+
 void get_files(vector<string> *ret,string path)
 {
     for (const auto & entry : fs::directory_iterator(path))
