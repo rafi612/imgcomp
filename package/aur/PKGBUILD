@@ -1,4 +1,3 @@
-_name=imgcomp
 pkgname=imgcomp
 pkgver=2.0
 pkgrel=1
@@ -25,5 +24,4 @@ build() {
 package() {
     cd "${pkgname}/build"
     make DESTDIR="$pkgdir" install
-    chmod +x "$pkgdir/usr/bin/imgcomp"
 }
