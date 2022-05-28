@@ -4,7 +4,7 @@
 #include "util.h"
 #include "imgcomp.h"
 
-#define VERSION "0.1.0"
+#define VERSION "0.1.1"
 
 using namespace std;
 namespace fs = std::filesystem;
