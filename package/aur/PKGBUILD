@@ -1,5 +1,5 @@
 pkgname=imgcomp
-pkgver=2.0
+pkgver=0.1.0
 pkgrel=1
 pkgdesc='Cross platform image compressing tool'
 arch=('any')
