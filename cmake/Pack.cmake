@@ -40,6 +40,7 @@ install(
     FILES
     "${CMAKE_CURRENT_BINARY_DIR}/imgcomp"
     DESTINATION "/usr/bin"
+    PERMISSIONS WORLD_READ
     COMPONENT ${PROJECT_NAME}
 )
 
