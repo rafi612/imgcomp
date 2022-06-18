@@ -1,9 +1,9 @@
 # imgcomp
 ![Build](https://img.shields.io/github/workflow/status/rafi612/imgcomp/CMake/main)
 ![License](https://img.shields.io/github/license/rafi612/imgcomp)
+![Release](https://img.shields.io/github/v/release/rafi612/imgcomp)
 ![Repo size](https://img.shields.io/github/repo-size/rafi612/imgcomp)
 ![Total lines](https://img.shields.io/tokei/lines/github/rafi612/imgcomp)
-![Release](https://img.shields.io/github/v/release/rafi612/imgcomp?include_prereleases)
 
 **Imgcomp** is cross platform image compressing tool which allows to lossy-compress amount of images in directories and subdirectories.
 
