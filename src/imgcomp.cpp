@@ -20,13 +20,12 @@ unsigned char *load_image(std::string srcpath,int* w,int* h,int* comp,const int 
     return stbi_load(srcpath.c_str(),w,h,comp,dest_chan);
 }
 
-unsigned char* compress_image(unsigned char* pixels,int w,int h,int comp,double divider,const int f,int* out_w,int* out_h,int* dest_chan)
+unsigned char* compress_image(unsigned char* pixels,int w,int h,int comp,double divider,const int format,int* out_w,int* out_h,int* dest_chan)
 {
-    //print(pixels);
     *out_w = (int)(w / divider);
     *out_h = (int)(h / divider);
 
-    *dest_chan = f == JPG ? STBI_rgb : STBI_rgb_alpha;
+    *dest_chan = format == JPG ? STBI_rgb : STBI_rgb_alpha;
 
     unsigned char* output_pixels = (unsigned char*) malloc((*out_w) * (*out_h) * (*dest_chan));
 
@@ -36,9 +35,9 @@ unsigned char* compress_image(unsigned char* pixels,int w,int h,int comp,double 
     return output_pixels;
 }
 
-void write_image(string destpath,unsigned char* output_pixels,int out_w,int out_h,int comp,const int f)
+void write_image(string destpath,unsigned char* output_pixels,int out_w,int out_h,int comp,const int format)
 {
-    switch (f)
+    switch (format)
     {
     case JPG:
         stbi_write_jpg(destpath.c_str(),out_w,out_h,STBI_rgb,output_pixels,100);

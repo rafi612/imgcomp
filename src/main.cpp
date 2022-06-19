@@ -9,11 +9,6 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-bool keepfiles,names;
-string source;
-string format;
-double divider = 0;  
-
 void help()
 {
     cout << "Usage: imgcomp -<flags> <folder or image path> <divider> <format>" << endl;
@@ -27,7 +22,7 @@ void help()
 
 }
 
-void compress(string file,double d,string f)
+void compress(string file,double divider,string format,bool keepfiles,bool names)
 {
     cout << "Searching files..." << endl;
 
@@ -74,21 +69,21 @@ void compress(string file,double d,string f)
                 
                 //load
                 int w,h,comp;
-                unsigned char* image = load_image(files[i],&w,&h,&comp,get_format_id(f));
+                unsigned char* image = load_image(files[i],&w,&h,&comp,get_format_id(format));
 
                 //remove old file
                 fs::remove(files[i]);
                 
                 //output path
-                string output = remove_extension(files[i]) + filenameaddon + f;
+                string output = remove_extension(files[i]) + filenameaddon + format;
                 out_path = fs::is_directory(file) ? file : output;
 
                 //resize
                 int out_w, out_h, dest_chan;
-                unsigned char* out_image = compress_image(image,w,h,comp,d,get_format_id(f),&out_w,&out_h,&dest_chan);
+                unsigned char* out_image = compress_image(image,w,h,comp,divider,get_format_id(format),&out_w,&out_h,&dest_chan);
 
                 //write
-                write_image(output,out_image,out_w,out_h,dest_chan,get_format_id(f));
+                write_image(output,out_image,out_w,out_h,dest_chan,get_format_id(format));
 
                 cout << "Compressed " << files[i] << " -> " << output << endl;
 			    compressedFiles++;
@@ -113,7 +108,12 @@ int main(int argc, char *argv[])
 {
     cout << "Image Compressor " << VERSION << endl;  
 
-    string flags;
+    bool keepfiles,names;
+    string source;
+    string format;
+    double divider = 0;  
+
+    string flags = argv[1];
     if (argc == 1)
     {
        help();
@@ -121,10 +121,8 @@ int main(int argc, char *argv[])
     }
 
     int move;
-    flags = argv[1];
     if (argc >= 2)
     {
-        //starts With
         if (flags.find("-") == 0) move = 0;
         else move = 1;
 
@@ -136,10 +134,10 @@ int main(int argc, char *argv[])
     }
 	if (move == 0)
 	{
-		if(contains(flags,"k"))//k
+		if(contains(flags,"k"))
 			keepfiles = true;
 
-		if(contains(flags,"n"))//n
+		if(contains(flags,"n"))
 			names = true;
 	}
 
@@ -152,7 +150,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    compress(source,divider,format);
+    compress(source,divider,format,keepfiles,names);
 
     return 0;
 }
