@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     if (contains(flags,"-help"))
        help();
 
-    if (fs::exists(source))
+    if (!fs::exists(source))
     {
         cerr << "Error: " << source << " not exists" << endl;
         return -1;
