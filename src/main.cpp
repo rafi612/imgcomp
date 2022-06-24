@@ -1,5 +1,6 @@
 #include <iostream>
 #include <filesystem>
+#include <vector>
 
 #include "util.h"
 #include "imgcomp.h"
@@ -19,7 +20,6 @@ void help()
     cout << "If you dont use flags use: imgcomp <folder or image path> <divider> <format>" << endl;
     cout << "Divider: Resolution was divided by divider" << endl;
     cout << "Format: png/jpg/bmp etc.. (jpg recomended)" << endl;
-
 }
 
 void compress(string file,double divider,string format,bool keepfiles,bool names)
@@ -108,7 +108,8 @@ int main(int argc, char *argv[])
 {
     cout << "Image Compressor " << VERSION << endl;  
 
-    bool keepfiles,names;
+    bool keepfiles = false;
+    bool names = false;
     string source;
     string format;
     double divider = 0;  
@@ -142,7 +143,10 @@ int main(int argc, char *argv[])
 	}
 
     if (contains(flags,"-help"))
-       help();
+    {
+        help();
+        return 0;
+    }
 
     if (!fs::exists(source))
     {
