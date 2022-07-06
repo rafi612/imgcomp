@@ -70,20 +70,12 @@ const int get_format_id(string f)
     }
 }
 
-int filesize(string s)
-{
-    ifstream is(s , ifstream::binary);
-    int ret = is.tellg();
-    is.close();
-    return ret;
-}
-
 int get_dir_size(string dir)
 {
     vector<string> files;
     get_files(&files, dir);
     int size = 0;
     for (string file : files)
-        size += filesize(file);
+        size += fs::is_directory(file) ? 0 : fs::file_size(file);
     return size;
 }

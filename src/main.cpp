@@ -5,7 +5,7 @@
 #include "util.h"
 #include "imgcomp.h"
 
-#define VERSION "0.1.1"
+#include "config.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -27,10 +27,12 @@ void compress(string file,double divider,string format,bool keepfiles,bool names
     cout << "Searching files..." << endl;
 
     vector<string> files;
-    if (fs::is_directory(file)) get_files(&files,file);
-    else files.push_back(file);
+    if (fs::is_directory(file)) 
+        get_files(&files,file);
+    else 
+        files.push_back(file);
 
-    size_t sizebefore = fs::file_size(file);
+    size_t sizebefore = fs::is_directory(file) ? get_dir_size(file) : fs::file_size(file);
 
     cout << files.size() << " files found in all directories and subdirectories" << endl;
     cout << "Size total:" << (sizebefore / 1000 / 1000) << "MB (" << sizebefore << " Bytes)" << endl;
@@ -49,33 +51,32 @@ void compress(string file,double divider,string format,bool keepfiles,bool names
     int compressedFiles = 0;
     uint64_t elapsedTime = 0;
 
-    string filenameaddon = "-compress.";
-    if (names) filenameaddon = ".";
+    string filenameaddon = names ? "." : "-compress.";
 
     string out_path;
 
-    for (int i = 0; i < files.size();i++)
+    for (string file : files)
 	{
-        percent = (int)((double)i / (double)files.size() * (double)100);
+        percent = (int)((double)compressedFiles / (double)files.size() * (double)100);
         elapsedTime = (timeSinceEpochMillisec() / 1000) - startTime;
         size_t allTimeForCompressing = (elapsedTime * files.size() / (compressedFiles + 1));
         size_t remainingTime = allTimeForCompressing - elapsedTime;
 
-        if (!fs::is_directory(files[i]))
+        if (!fs::is_directory(file))
         {
-            if (is_supported_image(files[i]))
+            if (is_supported_image(file))
             {
                 cout << "Compressed: " << percent << "% Elapsed: " << elapsedTime << "s ETA: " << remainingTime << "s" << endl;
                 
                 //load
                 int w,h,comp;
-                unsigned char* image = load_image(files[i],&w,&h,&comp,get_format_id(format));
+                unsigned char* image = load_image(file,&w,&h,&comp,get_format_id(format));
 
                 //remove old file
-                fs::remove(files[i]);
+                fs::remove(file);
                 
                 //output path
-                string output = remove_extension(files[i]) + filenameaddon + format;
+                string output = remove_extension(file) + filenameaddon + format;
                 out_path = fs::is_directory(file) ? file : output;
 
                 //resize
@@ -85,16 +86,17 @@ void compress(string file,double divider,string format,bool keepfiles,bool names
                 //write
                 write_image(output,out_image,out_w,out_h,dest_chan,get_format_id(format));
 
-                cout << "Compressed " << files[i] << " -> " << output << endl;
+                cout << "Compressed " << file << " -> " << output << endl;
 			    compressedFiles++;
             }
-            else cout << "Skipped " << files[i] << endl;
+            else cout << "Skipped " << file << endl;
         }
 	}
 
     cout << endl << "Compression Complete!!!" << endl;
 	cout << "Searching files..." << endl << endl;
-	size_t sizeafter = fs::file_size(out_path);
+
+	size_t sizeafter = fs::is_directory(file) ? get_dir_size(file) : fs::file_size(file);
 
 	cout << "Total time:" << elapsedTime << "s" << endl;
 	cout << "Size before:" << (sizebefore / 1000 / 1000) << "MB (" << sizebefore << " Bytes)" << endl;
@@ -114,24 +116,24 @@ int main(int argc, char *argv[])
     string format;
     double divider = 0;  
 
-    string flags = argv[1];
     if (argc == 1)
     {
        help();
        return 0;
     }
 
+    string flags = argv[1];
     int move;
     if (argc >= 2)
     {
-        if (flags.find("-") == 0) move = 0;
-        else move = 1;
+        move = flags.find("-") ? 1 : 0;
 
-        source = argv[2- move];
+        source = argv[2 - move];
 		divider = atof(argv[3 - move]);
 		format = argv[4 - move];
 
-        if (divider == 0) divider = 1;
+        if (divider == 0)
+            divider = 1;
     }
 	if (move == 0)
 	{
@@ -140,13 +142,13 @@ int main(int argc, char *argv[])
 
 		if(contains(flags,"n"))
 			names = true;
-	}
 
-    if (contains(flags,"-help"))
-    {
-        help();
-        return 0;
-    }
+        if (contains(flags,"help"))
+        {
+            help();
+            return 0;
+        }
+	}
 
     if (!fs::exists(source))
     {
