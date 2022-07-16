@@ -2,8 +2,8 @@
 #include <filesystem>
 #include <vector>
 
-#include "util.h"
-#include "imgcomp.h"
+#include "util.hpp"
+#include "imgcomp.hpp"
 
 #include "config.h"
 

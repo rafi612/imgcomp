@@ -5,8 +5,8 @@
 #include <chrono>
 #include <fstream>
 
-#include "util.h"
-#include "imgcomp.h"
+#include "util.hpp"
+#include "imgcomp.hpp"
 
 using namespace std;
 using namespace std::chrono;

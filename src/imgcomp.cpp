@@ -8,8 +8,8 @@
 
 #include <iostream>
 
-#include "imgcomp.h"
-#include "util.h"
+#include "imgcomp.hpp"
+#include "util.hpp"
 
 using namespace std;
 
