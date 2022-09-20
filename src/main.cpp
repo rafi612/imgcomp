@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     }
 
     string flags = argv[1];
-    int move;
+    int move = 0;
     if (argc >= 2)
     {
         move = flags.find("-") ? 1 : 0;
