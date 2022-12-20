@@ -1,5 +1,5 @@
 # imgcomp
-[Build]: https://img.shields.io/github/workflow/status/rafi612/imgcomp/CMake/main
+[Build]: https://img.shields.io/github/actions/workflow/status/rafi612/imgcomp/build.yml?branch=main
 [License]: https://img.shields.io/github/license/rafi612/imgcomp
 [Release]: https://img.shields.io/github/v/release/rafi612/imgcomp
 [Repo size]: https://img.shields.io/github/repo-size/rafi612/imgcomp
